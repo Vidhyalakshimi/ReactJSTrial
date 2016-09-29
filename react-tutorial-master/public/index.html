@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>React Tutorial</title>
+  <!-- Not present in the tutorial. Just for basic styling. -->
+  <link rel="stylesheet" href="css/base.css"/>
+  <script src="https://unpkg.com/react@15.3.0/dist/react.js"></script>
+  <script src="https://unpkg.com/react-dom@15.3.0/dist/react-dom.js"></script>
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  <script src="https://unpkg.com/jquery@3.1.0/dist/jquery.min.js"></script>
+  <script src="https://unpkg.com/remarkable@1.6.2/dist/remarkable.min.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+  <div id="app"></div>
+  <script type="text/babel">
+
+
+    var RegistrationForm = React.createClass({
+
+
+
+      getInitialState: function () {
+
+        var details = localStorage.getItem('details') || 1;
+
+
+        return {
+          email: '', name: '', company: '', isSelected: false, noOfUsers: 0,
+          details: [],
+
+        };
+      },
+
+      setDetails: function( details ) {
+        localStorage.setItem( 'details', details );
+        this.setState( { details: details } );
+      },
+
+      storeName: function (event) {
+        this.setState({name: event.target.value});
+      },
+
+      storeEmail: function (event) {
+        this.setState({email: event.target.value});
+      },
+
+      storeCompany: function (event) {
+        this.setState({company: event.target.value});
+      },
+
+      delete: function () {
+        console.log("Button Clicked! Finallyyyyy");
+      },
+      registerMessage: function () {
+        console.log(this.state.name);
+        console.log(this.state.email);
+        console.log(this.state.company);
+
+        var detail = this.state;
+
+        this.state.details.push(detail);
+        this.setState({noOfUsers: this.state.noOfUsers + 1});
+        console.log("length" + this.state.details.length);
+
+        console.log(this.state.noOfUsers);
+        this.setState({isSelected: true});
+
+      },
+
+
+      render: function () {
+        var isSelected = false;
+
+        return (
+          <div >
+
+            <div className="col-xs-9">
+              <form className="form-group">
+
+              <div className="row">
+                <div className="col-xs-5  col-md-offset-2">
+                  <h2> Women Who Code </h2>
+                  <label >Name: </label>
+                  <input className="form-control" id="name" type="text" placeholder="Enter Name!"
+                         onBlur={this.storeName}/>
+                </div>
+              </div>
+
+              <div>
+                <div className="row">
+
+                  <div className="col-xs-5  col-md-offset-2">
+                    <label>EmailID: </label>
+                    <input className="form-control" type="text" id="email" placeholder="Enter EmailID"
+                           onBlur={this.storeEmail}/>
+                  </div>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-xs-5  col-md-offset-2">
+                  <label>Company/Institution: </label>
+                  <input className="form-control" type="text" id="company" placeholder=" Enter Company/Institution"
+                         onBlur={this.storeCompany}/>
+                </div>
+              </div>
+
+              <div className="row">
+                <div className="col-xs-3 col-md-offset-4">
+                  <input className="btn btn-primary btn-space" onClick={this.registerMessage} type="button"
+                         value="Register"/>
+                </div>
+                <div className="col-xs-6 col-md-offset-2">
+                  {this.state.isSelected ? <h4>You have been successfully registered!</h4> : null}
+                </div>
+                <div className="col-xs-4 col-md-offset-9">
+                  Users registered: {this.state.noOfUsers}
+                </div>
+              </div>
+          </form>
+
+          </div>
+
+            <div className="col-xs-3 ">
+              <ul className="UserList">
+                {
+                  this.state.details.map(function (user) {
+                    return (
+                      <div id="userDelete"><li key={user.name}>{user.name}: {user.email} </li>
+                        <input type="button" id={user.name} className="btn btn-danger" value="Unregister" />
+                    </div>
+                    )
+                  })
+                }
+              </ul>
+            </div>
+
+          </div>
+        )
+      }
+
+    });
+
+    ReactDOM.render(
+      <RegistrationForm />,
+      document.getElementById('app')
+    );
+
+  </script>
+</body>
+</html>
+
+<style>
+  .btn-space {
+    margin-top: 20px;
+  }
+  .userDelete {
+    display: flex;
+    flex-direction: row-reverse;
+  }
+</style>
