@@ -21,6 +21,7 @@
 <script type="text/babel">
 
 
+
   var UsersItem = React.createClass({
 
     done: function() {
@@ -39,6 +40,7 @@
     }
   });
 
+
   var RegistrationForm = React.createClass({
 
 
@@ -46,6 +48,7 @@
 
       return {
         email: '', name: '', company: '', isSelected: false,
+        hasUsers: this.props.hasUsers,
         users: this.props.users
       };
 
@@ -53,8 +56,7 @@
 
 
     storeName: function (event) {
-      var value = event.target.value;
-        this.setState({name: value});
+        this.setState({name: event.target.value});
     },
 
     storeEmail: function (event) {
@@ -65,36 +67,45 @@
       this.setState({company: event.target.value});
     },
 
-    delete: function () {
-      console.log("Button Clicked! Finallyyyyy");
-    },
-
     done: function(user) {
+
+      console.log("Has user done: " + this.state.hasUsers);
+
+      if(JSON.parse(localStorage.getItem("users")).length == 1) {
+        this.setState({hasUsers: false});
+        localStorage.setItem('hasUsers', JSON.stringify(false));
+      }
+
       var users = this.props.users;
       users.splice(users.indexOf(user), 1);
       this.setState({ users: users });
 
       localStorage.setItem('users', JSON.stringify(users));
-    },
 
+    },
 
     registerMessage: function () {
 
+      console.log("Has user register: " + this.state.hasUsers);
       //ADD
       var users = this.props.users;
       users.push({name: this.state.name, email: this.state.email});
 
       this.setState({ users: users });
       this.setState({isSelected: true});
+      this.setState({hasUsers: true});
+
 
       localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem('hasUsers', JSON.stringify(true));
 
 
       //Clear
       this.refs.name.value = "";
       this.refs.email.value = "";
       this.refs.company.value = "";
-      this.setState({email : '', name : '', company: ''})
+      this.setState({email : '', name : '', company: ''});
+      setTimeout(function(){$('.message').fadeOut();}, 2000);
     },
 
   render: function () {
@@ -134,14 +145,15 @@
                   <input className="btn btn-primary btn-space" onClick={this.registerMessage} type="button"
                          value="Register"/>
                 </div>
-                <div className="col-md-6 col-md-offset-2">
-                  {this.state.isSelected ? <h4>You have been successfully registered!</h4> : null}
+                <div className="col-md-6 col-md-offset-2 message">
+                  {this.state.isSelected ?  <h4>You have been successfully registered!</h4> : null}
                 </div>
               </div>
 
             </form>
           </div>
 
+          {this.state.hasUsers?
           <div className="col-md-3">
             <ul className="UserList col-xs-5  col-md-offset-1">
               {
@@ -150,20 +162,20 @@
                 }.bind(this))
               }
             </ul>
-          </div>
+          </div> : null}
         </div>
       </div>
     )
 
-    var isSelected = false;
   }
 
   });
 
   var users = JSON.parse(localStorage.getItem('users')) || [];
+  var hasUsers = JSON.parse(localStorage.getItem('hasUsers')) || false;
 
   ReactDOM.render(
-    <RegistrationForm  users = {users}/>,
+    <RegistrationForm  users = {users} hasUsers = {hasUsers}/>,
     document.getElementById('app')
   );
 
