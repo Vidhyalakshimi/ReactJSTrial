@@ -47,9 +47,9 @@
     getInitialState: function () {
 
       return {
-        email: '', name: '', company: '', isSelected: false,
-        hasUsers: this.props.hasUsers,
-        users: this.props.users
+        email: '', name: '', company: '', error: '',isSelected: false,
+        hasUsers: this.props.hasUsers, validRegistration: false,
+        validEmail: true, users: this.props.users
       };
 
     },
@@ -69,8 +69,6 @@
 
     done: function(user) {
 
-      console.log("Has user done: " + this.state.hasUsers);
-
       if(JSON.parse(localStorage.getItem("users")).length == 1) {
         this.setState({hasUsers: false});
         localStorage.setItem('hasUsers', JSON.stringify(false));
@@ -84,9 +82,30 @@
 
     },
 
+    validate: function () {
+      if(this.state.name == '') {
+        this.setState({error: "   Must enter name"});
+        return true;
+      }
+
+      var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      if(this.state.email == '' || !re.test(this.state.email)) {
+        this.setState({error: "   Must enter valid email id"});
+        this.setState({validEmail: false});
+        return true;
+      }
+    },
+
     registerMessage: function () {
 
-      console.log("Has user register: " + this.state.hasUsers);
+      if(this.validate()) {
+        this.setState({isSelected: false});
+      }
+
+
+
+
+
       //ADD
       var users = this.props.users;
       users.push({name: this.state.name, email: this.state.email});
@@ -146,7 +165,7 @@
                          value="Register"/>
                 </div>
                 <div className="col-md-6 col-md-offset-2 message">
-                  {this.state.isSelected ?  <h4>You have been successfully registered!</h4> : null}
+                  {this.state.isSelected ?  <h4>You have been successfully registered!</h4> : <h4>{this.state.error}</h4>}
                 </div>
               </div>
 
